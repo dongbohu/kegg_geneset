@@ -95,6 +95,17 @@ def get_kset_info(kset_id, organism):
     return kset_info
 
 
+def rm_gene_fields(genes_info):
+    """Remove some redundant fields returned by mygene.info API."""
+    for g in genes_info:
+        if 'query' in g:
+            del g['query']
+        if '_version' in g:
+            del g['_version']
+
+    return genes_info
+
+
 def load_data(data_folder):
     """A generator that produces KEGG genesets."""
 
@@ -103,6 +114,7 @@ def load_data(data_folder):
     creator = "kegg_parser"
     is_public = True
 
+    mg = mygene.MyGeneInfo()
     for ktype_filename in glob.glob(os.path.join(data_folder, "*")):
         ksets_in_type = get_ksets_in_type(ktype_filename)
 
@@ -110,20 +122,26 @@ def load_data(data_folder):
             kset_info = get_kset_info(kset_id, organism)
 
             # Populate other fields in `kset_info`:
-            kset_info['genes'] = [int(x) for x in genes]
+            mg_fields=['name', 'symbol', 'taxid']
+            genes_info = mg.getgenes(genes, fields=mg_fields)
+            kset_info['genes'] = rm_gene_fields(genes_info)
             kset_info['creator'] = creator
             kset_info['date'] = date.today().isoformat()
             kset_info['is_public'] = is_public
             kset_info['organism'] = organism
 
-            # TODO: get genes info from mygene API
+            # Clean up the dict
             kset_info = dict_sweep(kset_info)
             kset_info = unlist(kset_info)
 
             yield kset_info
 
 
-# Test harness
+# Test harness: ~33 minutes, 2426 genesets, each with a unique "_id":
+#   - "disease": 1915
+#   - "module":   173
+#   - "pathway":  358
+#
 if __name__ == "__main__":
     import json
 
