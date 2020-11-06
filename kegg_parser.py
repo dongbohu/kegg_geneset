@@ -94,10 +94,10 @@ def get_kset_info(kset_id, organism):
         return kset_info
 
     kset_type = None
-    kset_title = None
+    kset_title = ""
 
-    # Strip the trailing blank lines in content text, then split and parse
-    # it line by line:
+    # Strip the trailing blank lines in content text, then split and
+    # parse it line by line:
     texts = response.text.rstrip('\n').split("\n")
     for line in texts:
         if line.startswith('ENTRY'):
@@ -106,17 +106,14 @@ def get_kset_info(kset_id, organism):
         if line.startswith('NAME'):
             kset_title = ' '.join(line.split()[1:])
 
+    kset_info['name'] = kset_title
+
     id_str = 'KEGG-' + slugify(organism) + "-"
     if kset_type:
         id_str += kset_type + "-"
     id_str += kset_id
-
-    kset_info["_id"] = id_str
-
-    if kset_title:
-        kset_info['name'] = kset_title
-    else:
-        kset_info['name'] = ""
+    #kset_info["_id"] = id_str
+    kset_info["_id"] = kset_id
 
     return kset_info
 
@@ -148,9 +145,10 @@ def load_data(data_folder):
             kset_info = get_kset_info(kset_id, organism)
 
             # Populate other fields in `kset_info`:
-            mg_fields=['symbol', 'name', 'taxid']
-            genes_info = mg.getgenes(genes, fields=mg_fields)
-            kset_info['genes'] = rm_gene_fields(genes_info)
+            #mg_fields=['symbol', 'name', 'taxid']
+            #genes_info = mg.getgenes(genes, fields=mg_fields)
+            #kset_info['genes'] = rm_gene_fields(genes_info)
+            kset_info['genes'] = genes
             kset_info['creator'] = creator
             kset_info['date'] = date.today().isoformat()
             kset_info['is_public'] = is_public
