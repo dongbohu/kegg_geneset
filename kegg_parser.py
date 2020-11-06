@@ -158,7 +158,7 @@ def load_data(data_folder):
             kset_info = dict_sweep(kset_info)
             kset_info = unlist(kset_info)
 
-            yield {'_id': kset_id, 'info': kset_info}
+            yield {'_id': kset_id, 'annotations': kset_info}
 
 
 # Test harness: ~33 minutes w/o calling mygene API, 90 minutes when calling mygene API.
