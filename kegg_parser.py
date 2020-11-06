@@ -3,6 +3,8 @@
 from datetime import date
 import glob
 import os
+import re
+import unicodedata
 import requests
 
 from biothings.utils.dataload import dict_sweep, unlist
@@ -10,6 +12,23 @@ import mygene
 
 ROOT_URL="http://rest.kegg.jp/get/"
 
+# ================================================================
+# This function is copied from `slugify()` function in
+# `annotation-refinery/slugify.py`
+# ================================================================
+def slugify(value, allow_unicode=False):
+    """
+    Convert to ASCII if 'allow_unicode' is False. Convert spaces to hyphens.
+    Remove characters that aren't alphanumerics, underscores, or hyphens.
+    Convert to lowercase. Also strip leading and trailing whitespace.
+    """
+    if allow_unicode:
+        value = unicodedata.normalize('NFKC', value)
+        value = re.sub('[^\w\s-]', '', value, flags=re.U).strip().lower()
+
+    value = re.sub('[^\w\s-]', '', value).strip().lower()
+    value = re.sub('[-\s]+', '-', value)
+    return value
 
 # ================================================================
 # This function is based on `get_kegg_sets_members()` function in
@@ -67,7 +86,6 @@ def get_kset_info(kset_id, organism):
     """
 
     kset_info = dict()
-    kset['_id'] = kset_id
 
     url = ROOT_URL + kset_id
     response = requests.get(url)
@@ -88,8 +106,17 @@ def get_kset_info(kset_id, organism):
         if line.startswith('NAME'):
             kset_title = ' '.join(line.split()[1:])
 
+    id_str = 'KEGG-' + slugify(organism) + "-"
+    if kset_type:
+        id_str += kset_type + "-"
+    id_str += kset_id
+
+    kset_info["_id"] = id_str
+
     if kset_title:
-        kset_info['name'] = 'KEGG-' + kset_type + '-' + kset_id + ': ' + kset_title
+        kset_info['name'] = kset_title
+    else:
+        kset_info['name'] = ""
 
     return kset_info
 
