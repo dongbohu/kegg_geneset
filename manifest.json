@@ -2,10 +2,7 @@
   "version": "0.1",
   "requires" : ["biothings", "mygene", "requests"],
   "dumper": {
-    "data_url": ["http://rest.kegg.jp/link/hsa/disease",
-                 "http://rest.kegg.jp/link/hsa/module",
-                 "http://rest.kegg.jp/link/hsa/pathway"
-		],
+    "data_url": "http://rest.kegg.jp/link/hsa/module",
     "uncompress": false,
     "release": "release:get_release"
   },

@@ -122,7 +122,7 @@ def load_data(data_folder):
             kset_info = get_kset_info(kset_id, organism)
 
             # Populate other fields in `kset_info`:
-            mg_fields=['name', 'symbol', 'taxid']
+            mg_fields=['symbol', 'name', 'taxid']
             genes_info = mg.getgenes(genes, fields=mg_fields)
             kset_info['genes'] = rm_gene_fields(genes_info)
             kset_info['creator'] = creator
@@ -137,10 +137,11 @@ def load_data(data_folder):
             yield kset_info
 
 
-# Test harness: ~33 minutes, 2426 genesets, each with a unique "_id":
-#   - "disease": 1915
-#   - "module":   173
-#   - "pathway":  358
+# Test harness: ~33 minutes w/o calling mygene API, 90 minutes when calling mygene API.
+# 2,426 genesets, each with a unique "_id".
+#   - "disease": 1,915
+#   - "module":    173
+#   - "pathway":   358
 #
 if __name__ == "__main__":
     import json
