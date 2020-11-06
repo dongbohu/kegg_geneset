@@ -67,6 +67,7 @@ def get_kset_info(kset_id, organism):
     """
 
     kset_info = dict()
+    kset['_id'] = kset_id
 
     url = ROOT_URL + kset_id
     response = requests.get(url)
@@ -88,9 +89,7 @@ def get_kset_info(kset_id, organism):
             kset_title = ' '.join(line.split()[1:])
 
     if kset_title:
-        kset_info['_id'] = (
-            'KEGG-' + kset_type + '-' + kset_id + ': ' + kset_title
-        )
+        kset_info['name'] = 'KEGG-' + kset_type + '-' + kset_id + ': ' + kset_title
 
     return kset_info
 
