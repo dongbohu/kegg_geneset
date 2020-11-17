@@ -210,6 +210,6 @@ def load_data(data_dir):
 if __name__ == '__main__':
     import json
 
-    # Time to create 9 organisms: 5 minutes & 55 seconds (5,272 genesets)
+    # Time to create 9 organisms: 5-6 minutes (5,272 genesets)
     for gs in load_data('./test_data/'):
         print(json.dumps(gs, indent=2))
