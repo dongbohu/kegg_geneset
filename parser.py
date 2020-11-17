@@ -9,7 +9,6 @@ import glob
 import logging
 import os
 import re
-import unicodedata
 import requests
 
 import mygene
