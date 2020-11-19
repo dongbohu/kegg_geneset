@@ -11,11 +11,22 @@ import os
 import mygene
 from biothings.utils.dataload import dict_sweep, unlist
 from kegg_geneset.config import BASE_URL, LOG_LEVEL, organisms
-from kegg_geneset.utils import get_url_text_lines
 
 # Logging config
 logging.basicConfig(level=LOG_LEVEL, format='%(asctime)s: %(message)s')
 
+
+def get_url_text_lines(url):
+    """
+    Send a request to `url` and return its plain text content in multiple lines.
+    """
+
+    resp = requests.get(url)
+    if resp.status_code != 200:
+        raise Exception(f"Failed to request {url}")
+
+    text_lines = resp.text.strip('\n').split('\n')
+    return text_lines
 
 
 def get_shared_genesets(geneset_type):
