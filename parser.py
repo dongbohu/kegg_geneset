@@ -10,8 +10,8 @@ import os
 
 import mygene
 from biothings.utils.dataload import dict_sweep, unlist
-from .config import BASE_URL, LOG_LEVEL, organisms
-from .utils import get_url_text_lines
+from config import BASE_URL, LOG_LEVEL, organisms
+from utils import get_url_text_lines
 
 # Logging config
 logging.basicConfig(level=LOG_LEVEL, format='%(asctime)s: %(message)s')
