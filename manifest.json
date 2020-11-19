@@ -2,7 +2,7 @@
   "version": "0.1",
   "requires" : ["biothings", "mygene"],
   "dumper": {
-    "data_url": "http://rest.kegg.jp/list/disease",
+    "data_url": ["http://rest.kegg.jp/list/disease"],
     "uncompress": false
   },
   "uploader" : {
