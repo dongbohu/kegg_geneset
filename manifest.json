@@ -3,7 +3,8 @@
   "requires" : ["biothings", "mygene"],
   "dumper": {
     "data_url": "http://rest.kegg.jp/list/disease",
-    "uncompress": false
+    "uncompress": false,
+    "release": "utils:get_release"
   },
   "uploader" : {
     "parser": "parser:load_data",

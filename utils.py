@@ -2,12 +2,9 @@
 
 """Utility functions"""
 
-import requests
-
-KEGG_INFO_URL = "http://rest.kegg.jp/info/kegg"
-
-
 def get_release(self):
+    import requests
+    KEGG_INFO_URL = "http://rest.kegg.jp/info/kegg"
     release = ""
     resp = requests.get(KEGG_INFO_URL)
     if resp.status_code != 200:
