@@ -2,8 +2,6 @@
 
 """Utility functions"""
 
-import re
-import unicodedata
 import requests
 
 KEGG_INFO_URL = "http://rest.kegg.jp/info/kegg"
