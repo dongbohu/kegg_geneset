@@ -145,7 +145,7 @@ def load_data(data_dir):
         organism_code = config['organism_code']
 
         # dhu: uncomment the following line to test a certain organism only
-        if organism_code != "ath": continue
+        #if organism_code != "ath": continue
 
         pathway_genesets = get_pathway_genesets(organism_code)
         all_genesets = {**shared_genesets, **pathway_genesets}
