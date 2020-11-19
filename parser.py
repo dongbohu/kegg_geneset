@@ -7,6 +7,7 @@ TODO: Add docstrings on URLs used when collecting KEGG genesets.
 from datetime import date
 import logging
 import os
+import requests
 
 import mygene
 from biothings.utils.dataload import dict_sweep, unlist
