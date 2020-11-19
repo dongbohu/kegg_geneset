@@ -6,8 +6,7 @@
       "http://rest.kegg.jp/list/disease",
       "http://rest.kegg.jp/list/module"
     ],
-    "uncompress": false,
-    "release": "utils:get_release"
+    "uncompress": false
   },
   "uploader" : {
     "parser": "parser:load_data",
