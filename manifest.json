@@ -1,9 +1,10 @@
 {
   "version": "0.1",
-  "requires" : ["biothings", "mygene"],
+  "requires" : ["biothings", "mygene", "requests"],
   "dumper": {
-    "data_url": ["http://rest.kegg.jp/list/disease"],
-    "uncompress": false
+    "data_url": ["http://rest.kegg.jp/list/module"],
+    "uncompress": false,
+    "release": "version:get_release"
   },
   "uploader" : {
     "parser": "parser:load_data",
