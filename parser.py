@@ -1,55 +1,41 @@
 #!/usr/bin/env python3
 
 """
-TODO: Add docstrings on URLs used in this module.
+TODO: Add docstrings on URLs used when collecting KEGG genesets.
 """
 
 from datetime import date
-import glob
 import logging
 import os
-import re
-import requests
 
 import mygene
 from biothings.utils.dataload import dict_sweep, unlist
-from config import BASE_URL, organisms
+from config import BASE_URL, LOG_LEVEL, organisms
+from utils import get_url_text_lines
 
 # Logging config
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s: %(message)s')
+logging.basicConfig(level=LOG_LEVEL, format='%(asctime)s: %(message)s')
 
 
-def get_shared_genesets(data_dir):
+def get_shared_genesets(geneset_type):
     """
     Get genesets that are shared by all organisms based on files in
     `data_dir`.  Note that these files are tab-delimited.
     """
+    url = BASE_URL + f"list/{geneset_type}"
+    text_lines = get_url_text_lines(url)
 
     shared_genesets = dict()
-    for filename in glob.glob(os.path.join(data_dir, "*")):
-        gs_type = filename.split('/')[-1]
-        with open(filename) as fh:
-            for line in fh:
-                tokens = line.strip('\n').split("\t")
-                entry = tokens[0].split(":")[1]
-                name = tokens[1]
-                if entry in shared_genesets:
-                    raise Exception(f"Duplicate entry in {filename}: {entry}")
-                shared_genesets[entry] = {
-                    'type': gs_type,
-                    'name': name,
-                }
+    for line in text_lines:
+        tokens = line.strip('\n').split("\t")
+        entry = tokens[0].split(":")[1]
+        name = tokens[1]
+        shared_genesets[entry] = {
+            'type': geneset_type,
+            'name': name,
+        }
 
     return shared_genesets
-
-
-def get_url_content(url):
-    resp = requests.get(url)
-    if resp.status_code != 200:
-        raise Exception(f"Failed to request {url}")
-
-    text = resp.text.strip('\n').split('\n')
-    return text
 
 
 def get_pathway_genesets(organism_code):
@@ -61,8 +47,8 @@ def get_pathway_genesets(organism_code):
     pathway_genesets = dict()
 
     url = BASE_URL + f"list/pathway/{organism_code}"
-    text = get_url_content(url)
-    for line in text:
+    text_lines = get_url_text_lines(url)
+    for line in text_lines:
         tokens = line.split("\t")
         entry = tokens[0].split(":")[1]
         name = tokens[1]
@@ -130,7 +116,11 @@ def query_mygene(genes, tax_id, gene_id_types):
 
 
 def load_data(data_dir):
-    shared_genesets = get_shared_genesets(data_dir)
+    """The argument `data_dir` is not being used at this moment."""
+
+    shared_diseases = get_shared_genesets("disease")
+    shared_modules = get_shared_genesets("module")
+    shared_genesets = {**shared_diseases, **shared_modules}
 
     for config in organisms:
         organism_name = config['name']
@@ -140,6 +130,10 @@ def load_data(data_dir):
         logging.info(f"Parsing genesets for {organism_name} (taxid={tax_id}) ...")
 
         organism_code = config['organism_code']
+
+        # dhu: uncomment the following line to test a certain organism only
+        if organism_code != "ath": continue
+
         pathway_genesets = get_pathway_genesets(organism_code)
         all_genesets = {**shared_genesets, **pathway_genesets}
 
@@ -147,8 +141,8 @@ def load_data(data_dir):
         genes_in_gs = dict()
         for gs_type in config['geneset_types']:
             url = BASE_URL + f"link/{organism_code}/{gs_type}"
-            text = get_url_content(url)
-            for line in text:
+            text_lines = get_url_text_lines(url)
+            for line in text_lines:
                 tokens = line.split()
                 if gs_type == 'module':
                     gs_entry = tokens[0].split(":")[1].split("_")[1]
@@ -207,9 +201,10 @@ def load_data(data_dir):
             yield my_geneset
 
 
+# Test harness
 if __name__ == '__main__':
     import json
 
     # Time to create 9 organisms: 5-6 minutes (5,272 genesets)
-    for gs in load_data('./test_data/'):
+    for gs in load_data(None):
         print(json.dumps(gs, indent=2))

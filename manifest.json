@@ -2,9 +2,9 @@
   "version": "0.1",
   "requires" : ["biothings", "mygene", "requests"],
   "dumper": {
-    "data_url": "http://rest.kegg.jp/link/hsa/module",
+    "data_url": [],
     "uncompress": false,
-    "release": "release:get_release"
+    "release": "utils:get_release"
   },
   "uploader" : {
     "parser": "kegg_parser:load_data",
