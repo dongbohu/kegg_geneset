@@ -10,7 +10,7 @@
     "release": "utils:get_release"
   },
   "uploader" : {
-    "parser": "kegg_parser:load_data",
+    "parser": "parser:load_data",
     "on_duplicates": "error"
   }
 }
