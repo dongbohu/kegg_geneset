@@ -5,16 +5,20 @@ TODO: Add docstrings on URLs used when collecting KEGG genesets.
 """
 
 from datetime import date
-import logging
 import os
 import requests
 
 import mygene
 from biothings.utils.dataload import dict_sweep, unlist
-from kegg_geneset.config import BASE_URL, LOG_LEVEL, organisms
 
-# Logging config
-logging.basicConfig(level=LOG_LEVEL, format='%(asctime)s: %(message)s')
+try:                         # run as a data plugin of Biothings SDK
+    from kegg_geneset.config import BASE_URL, LOG_LEVEL, organisms
+    from biothings import config
+    logging = config.logger
+except ModuleNotFoundError:  # run locally as a standalone script
+    from config import BASE_URL, LOG_LEVEL, organisms
+    import logging
+    logging.basicConfig(level=LOG_LEVEL, format='%(asctime)s: %(message)s')
 
 
 def get_url_text_lines(url):
@@ -32,8 +36,9 @@ def get_url_text_lines(url):
 
 def get_shared_genesets(geneset_type):
     """
-    Get genesets that are shared by all organisms based on files in
-    `data_dir`.  Note that these files are tab-delimited.
+    Get genesets that are shared by all organisms and whose type is
+    `geneset_type`.
+    Note that the contents of URL response are tab-delimited.
     """
     url = BASE_URL + f"list/{geneset_type}"
     text_lines = get_url_text_lines(url)
@@ -218,6 +223,6 @@ def load_data(data_dir):
 if __name__ == '__main__':
     import json
 
-    # Time to create 9 organisms: 5-6 minutes (5,272 genesets)
+    # Time to create 9 organisms: 5-6 minutes (~5,300 genesets)
     for gs in load_data(None):
         print(json.dumps(gs, indent=2))
