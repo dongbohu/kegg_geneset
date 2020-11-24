@@ -181,17 +181,17 @@ def load_data(data_dir):
         q_to_geneinfo = dict()
         for gene in matched_genes:
             q_str = gene['query']
-            ensembl_id = None  # ensembl_id is optional
+            ensembl_id = ""  # ensembl_id is optional
             if 'ensembl' in gene and 'gene' in gene['ensembl']:
                 ensembl_id = gene['ensembl']['gene']
 
             q_to_geneinfo[q_str] = {
                 'source': q_str,
-                'mygene': gene.get('_id', None),
-                'ncbigene': gene.get('entrezgene', None),
+                'mygene': gene.get('_id', ""),
+                'ncbigene': gene.get('entrezgene', ""),
                 'ensemblgene': ensembl_id,
-                'symbol': gene.get('symbol', None),
-                'uniprot': gene.get('uniprot', None)
+                'symbol': gene.get('symbol', ""),
+                'uniprot': gene.get('uniprot', "")
             }
 
         for gs_entry, genes in genes_in_gs.items():
@@ -213,7 +213,7 @@ def load_data(data_dir):
             }
 
             # Clean up the dict
-            my_geneset = dict_sweep(my_geneset)
+            my_geneset = dict_sweep(my_geneset, remove_invalid_list=True)
             my_geneset = unlist(my_geneset)
 
             yield my_geneset
