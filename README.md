@@ -1,1 +1,3 @@
-A simple KEGG data plugin that will be used by Biothings SDK.
+## KEGG data plugin (for Biothings SDK)
+Some of the code is based on
+[greenelab/annotation-refinery](https://github.com/greenelab/annotation-refinery/)
