@@ -11,11 +11,11 @@ import requests
 import mygene
 from biothings.utils.dataload import dict_sweep, unlist
 
-try:                         # run as a data plugin of Biothings SDK
+try:                         # run as a data plugin module of Biothings SDK
     from kegg_geneset.config import BASE_URL, LOG_LEVEL, organisms
     from biothings import config
     logging = config.logger
-except ModuleNotFoundError:  # run locally as a standalone script
+except Exception:            # run locally as a standalone script
     from config import BASE_URL, LOG_LEVEL, organisms
     import logging
     logging.basicConfig(level=LOG_LEVEL, format='%(asctime)s: %(message)s')
